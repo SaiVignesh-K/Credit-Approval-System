@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/credit_db
+    volumes:
+      - .:/app
+      - ./customer_data.xlsx:/app/customer_data.xlsx  # Mount the Excel file
+      - ./loan_data.xlsx:/app/loan_data.xlsx          # Mount the Excel file
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=credit_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
